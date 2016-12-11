@@ -1,0 +1,4 @@
+#! /bin/bash
+
+#Make sure the script exit before the archive
+exit

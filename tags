@@ -1,0 +1,18 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Compressor	compressor/Compressor.py	/^class Compressor:$/;"	kind:c	line:21	language:Python	inherits:
+Compressor	compressor/tgz.py	/^class Compressor(compressor.Compressor.):$/;"	kind:c	line:20	language:Python	inherits:compressor.Compressor.
+Compressor	compressor/tgz.py	/^import compressor.Compressor$/;"	kind:i	line:18	language:Python
+__init__	compressor/Compressor.py	/^    def __init__(self, input_dir, extract_dir, install_script, output):$/;"	kind:m	line:22	language:Python	class:Compressor	access:public
+compressor	compressor/tgz.py	/^import compressor.Compressor$/;"	kind:i	line:18	language:Python
+get_compressor	compressor/__init__.py	/^def get_compressor(name):$/;"	kind:f	line:21	language:Python	access:public
+get_compressor_list	compressor/__init__.py	/^def get_compressor_list():$/;"	kind:f	line:18	language:Python	access:public
+get_options	compressor/Compressor.py	/^    def get_options():$/;"	kind:m	line:77	language:Python	class:Compressor	access:public
+math	compressor/Compressor.py	/^import math$/;"	kind:i	line:19	language:Python
+mksfx	compressor/Compressor.py	/^    def mksfx(self):$/;"	kind:m	line:71	language:Python	class:Compressor	access:public
+os	compressor/Compressor.py	/^import os$/;"	kind:i	line:18	language:Python
+translate_args	compressor/Compressor.py	/^    def translate_args(self, arg_dict):$/;"	kind:m	line:74	language:Python	class:Compressor	access:public
