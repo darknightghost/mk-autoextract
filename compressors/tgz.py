@@ -15,8 +15,16 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-def get_compressor_list():
-    pass
+import compressors.Compressor
+import tarfile
+import os
 
-def get_compressor(name):
-    pass
+class Compressor(compressors.Compressor.Compressor):
+    def mksfx(self):
+        raise NotImplementedError()
+
+    def translate_args(self, arg_dict):
+        return True
+
+    def get_options():
+        return []

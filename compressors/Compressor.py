@@ -22,7 +22,19 @@ class Compressor:
     def __init__(self, input_dir, extract_dir, install_script, output):
         self.input_dir = input_dir
         self.output = output
+        self.extract_dir = extract_dir
+        self.install_script = install_script
         
+    def mksfx(self):
+        return 0
+
+    def translate_args(self, arg_dict):
+        raise NotImplementedError()
+
+    def get_options():
+        raise NotImplementedError()
+
+    def __mk_extract_header(self, option_lines):
         #Load template file
         template_file_path = os.path.abspath(
             "%s%s%s.template"%(os.path.dirname(__file__),
@@ -40,13 +52,17 @@ class Compressor:
         extract_script.append(lines[1])
 
         #Write args
-        extract_dir_line = "extract_dir=\"%s\"\n"%(extract_dir)
-        install_script_line = "install_script=\"%s\""%(install_script)
+        extract_dir_line = "extract_dir=\"%s\"\n"%(self.extract_dir)
+        install_script_line = "install_script=\"%s\""%(self.install_script)
         size_line = "size="
 
         size += len(extract_dir_line.encode('utf-8')) \
                 + len(install_script_line.encode('utf-8')) \
                 + len(size_line.encode('utf-8'))
+
+        for l in option_lines:
+            size += len(l.encode('utf-8'))
+
         size += 20
         size = math.ceil(size / 8) * 8
         size_line += str(size) + "\n"
@@ -54,6 +70,9 @@ class Compressor:
         extract_script.append(extract_dir_line)
         extract_script.append(install_script_line)
         extract_script.append(size_line)
+
+        for l in option_lines:
+            extract_script.append(l)
 
         #Read extract script
         for i in range(1, len(lines)):
@@ -66,13 +85,4 @@ class Compressor:
 
         if len(self.extract_head) < size:
             self.extract_head += b'\x00' * size.len(self.extract_head)
-            
 
-    def mksfx(self):
-        raise NotImplementedError()
-
-    def translate_args(self, arg_dict):
-        raise NotImplementedError()
-
-    def get_options():
-        raise NotImplementedError()

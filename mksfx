@@ -17,35 +17,74 @@
 
 import os
 import sys
-import compressor
+import compressors
 
-compress_format = None
-input_dir = None
-extract_dir = None
-install_script = None
-output = None
+arg_dict = {}
 
 def main(argv):
     #Translate arguments
-    if len(argv) < 11:
+    if len(argv) < 2:
         usage()
         return 64
 
-    trans_state, help_flag = translate_args(argv)
-    if not trans_state:
-        usage()
-        return 64
+    compressor, help_flag = translate_args(argv)
 
-    elif help_flag:
+    if help_flag:
         usage()
         return 0
 
+    elif compressor == None:
+        usage()
+        return 64
 
-    #Load compressor
-    return 0
+    ret = Compressor.mksfx()
+
+    return ret
 
 def translate_args(argv):
-    return True, True
+    global arg_dict
+
+    #Get args
+    key = None
+    for i in range(1, len(argv)):
+        if argv[i][0] == "-":
+            if key == None:
+                key = argv[i]
+
+            else:
+                arg_dict[key] = None
+                key = argv[i]
+
+        else:
+            if key == None:
+                return None, False
+
+            else:
+                arg_dict[key] = argv[i]
+                key = None
+
+    if key != None:
+        arg_dict[key] = None
+
+    if "--help" in arg_dict.keys():
+        return None, True
+
+    #Load compressor
+    try:
+        compressor = compressors.get_compressor(arg_dict["-f"])
+        comp = compressor(
+                arg_dict["-d"],
+                arg_dict["-e"],
+                arg_dict["-i"],
+                arg_dict["-o"])
+
+        if not comp.translate_args(arg_dict):
+            return None, False
+
+        return comp, False
+
+    except KeyError:
+        return None, False
 
 def usage():
     print("Usage:")
@@ -53,10 +92,15 @@ def usage():
             + "%s [compressor-options] -f format -d input-dir -e extract-dir [-i install-script] -o output"\
             %(__file__))
 
+    compressor_list = compressors.get_compressor_list()
+    print("Supported compressors:")
+    for c in compressor_list:
+        print(' ' * 4 + c)
+
     #Get options
     options = [
         [
-            "Options:",[
+            "Options:", [
                 ("-d input-dir", "Input directory."),
                 ("-e extract_dir", "Extract directory."),
                 ("-i install-script", "Script to run after extract."),
@@ -66,6 +110,12 @@ def usage():
             ]
         ]
     ]
+
+    for c in compressor_list:
+        comp = compressors.get_compressor(c)
+        o = ["Compressor %s options:"%(c),
+                comp.get_options()]
+        options.append(o)
 
     #Print options
     for o in options:

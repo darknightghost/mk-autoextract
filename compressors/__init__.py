@@ -15,7 +15,19 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import compressor.Compressor
+import os
+import importlib
 
-class Compressor(compressor.Compressor.):
-    pass
+def get_compressor_list():
+    ret = []
+    file_list = os.listdir(os.path.dirname(__file__))
+
+    for f in file_list:
+        if f[-3: ] == ".py":
+            if f not in ("__init__.py", "Compressor.py"):
+                ret.append(os.path.splitext(f)[0])
+
+    return ret
+
+def get_compressor(name):
+    return importlib.import_module("compressors.%s"%(name)).Compressor
