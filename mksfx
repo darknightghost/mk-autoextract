@@ -37,7 +37,7 @@ def main(argv):
         usage()
         return 64
 
-    ret = Compressor.mksfx()
+    ret = compressor.mksfx()
 
     return ret
 
@@ -71,11 +71,17 @@ def translate_args(argv):
 
     #Load compressor
     try:
+        install_script = arg_dict["-i"],
+
+    except KeyError:
+        install_script = ""
+
+    try:
         compressor = compressors.get_compressor(arg_dict["-f"])
         comp = compressor(
                 arg_dict["-d"],
                 arg_dict["-e"],
-                arg_dict["-i"],
+                install_script,
                 arg_dict["-o"])
 
         if not comp.translate_args(arg_dict):

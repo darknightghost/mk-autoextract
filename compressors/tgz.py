@@ -21,7 +21,42 @@ import os
 
 class Compressor(compressors.Compressor.Compressor):
     def mksfx(self):
-        raise NotImplementedError()
+        tmp_file = self.output + ".tmp"
+
+        print("Compressing...")
+        with tarfile.open(tmp_file, "w:gz") as tar:
+            tar.add(self.input_dir, arcname="/")
+
+        tar.close()
+        size = os.path.getsize(tmp_file)
+        self.__mk_extract_header([], size)
+
+        print("Making sfx file...")
+        f = open(self.output, "wb")
+        f.write(self.extract_header)
+
+        ftmp = open(tmp_file, "rb")
+        
+        data = ftmp.read(4096)
+        copied = len(data)
+        f.write(data)
+        print("%d byte(s) copied."%(copied), end = "")
+
+        while len(data) > 0:
+            data = ftmp.read(4096)
+            copied += len(data)
+            f.write(data)
+            print("\r%d byte(s) copied."%(copied), end = "")
+
+        print("")
+        ftmp.close()
+        os.unlink(tmp_file)
+
+        f.close()
+
+        os.chmod(self.output, os.stat(self.output).st_mode | 0o0111)
+
+        return 0
 
     def translate_args(self, arg_dict):
         return True

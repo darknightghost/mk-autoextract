@@ -1,4 +1,9 @@
 #! /bin/bash
 
+echo "Extracting file "$0"..."
+mkdir -p $extract_dir
+tail -c $size $0 | tar -zxv -C $extract_dir
+$install_script
+
 #Make sure the script exit before the archive
 exit

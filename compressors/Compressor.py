@@ -34,38 +34,26 @@ class Compressor:
     def get_options():
         raise NotImplementedError()
 
-    def __mk_extract_header(self, option_lines):
+    def __mk_extract_header(self, option_lines, size):
         #Load template file
         template_file_path = os.path.abspath(
             "%s%s%s.template"%(os.path.dirname(__file__),
                 os.path.sep,
-                self.__class__.__name__))
+                self.__class__.__module__.split(".")[-1]))
 
         f = open(template_file_path, "r")
         lines = f.readlines()
-        size = f.tell()
         f.close()
 
         extract_script = []
 
         #First line
-        extract_script.append(lines[1])
+        extract_script.append(lines[0])
 
         #Write args
         extract_dir_line = "extract_dir=\"%s\"\n"%(self.extract_dir)
-        install_script_line = "install_script=\"%s\""%(self.install_script)
-        size_line = "size="
-
-        size += len(extract_dir_line.encode('utf-8')) \
-                + len(install_script_line.encode('utf-8')) \
-                + len(size_line.encode('utf-8'))
-
-        for l in option_lines:
-            size += len(l.encode('utf-8'))
-
-        size += 20
-        size = math.ceil(size / 8) * 8
-        size_line += str(size) + "\n"
+        install_script_line = "install_script=\"%s\"\n"%(self.install_script)
+        size_line = "size=%d\n"%(size)
 
         extract_script.append(extract_dir_line)
         extract_script.append(install_script_line)
@@ -76,13 +64,9 @@ class Compressor:
 
         #Read extract script
         for i in range(1, len(lines)):
-            extract_script.append(lines(i))
+            extract_script.append(lines[i])
 
         #Encode extract head
-        self.extract_head = b''
+        self.extract_header = b''
         for l in extract_script:
-            self.extract_head += l.encode('utf-8')
-
-        if len(self.extract_head) < size:
-            self.extract_head += b'\x00' * size.len(self.extract_head)
-
+            self.extract_header += l.encode('utf-8')
