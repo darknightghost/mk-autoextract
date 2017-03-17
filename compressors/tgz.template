@@ -1,7 +1,9 @@
-#! /bin/bash
+#! /bin/sh
 
 echo "Extracting file "$0"..."
-mkdir -p $extract_dir
+if [ -d $extract_dir ]; then
+	mkdir -p $extract_dir
+fi
 tail -c $size $0 | tar -zxv -C $extract_dir
 $install_script
 

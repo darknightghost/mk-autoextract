@@ -47,15 +47,24 @@ def translate_args(argv):
     #Get args
     key = None
     for i in range(1, len(argv)):
-        if argv[i][0] == "-":
-            if key == None:
-                key = argv[i]
+        try:
+            if argv[i][0] == "-":
+                if key == None:
+                    key = argv[i]
+
+                else:
+                    arg_dict[key] = None
+                    key = argv[i]
 
             else:
-                arg_dict[key] = None
-                key = argv[i]
+                if key == None:
+                    return None, False
 
-        else:
+                else:
+                    arg_dict[key] = argv[i]
+                    key = None
+
+        except IndexError:
             if key == None:
                 return None, False
 
